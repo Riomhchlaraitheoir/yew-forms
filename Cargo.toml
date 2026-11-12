@@ -1,0 +1,17 @@
+[workspace]
+members = ["macros", "macros-impl"]
+
+
+[package]
+name = "yew-forms"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+derive = ["dep:macros"]
+
+[dependencies]
+#validator = { git = "https://github.com/Riomhchlaraitheoir/rust-validator.git", rev="4b5d2ba" }
+validator = { path = "../rust-validator/crates/validator" }
+yew = "0.23.0"
+macros = { path = "macros", optional = true }
