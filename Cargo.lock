@@ -516,6 +516,7 @@ dependencies = [
 [[package]]
 name = "impl_for_tuple"
 version = "0.1.0"
+source = "git+https://github.com/Riomhchlaraitheoir/impl_for_tuple.git?rev=5d0829c#5d0829cd22c5b59b4906d68234ba91bc4a23c644"
 dependencies = [
  "internal",
 ]
@@ -553,6 +554,7 @@ dependencies = [
 [[package]]
 name = "internal"
 version = "0.1.0"
+source = "git+https://github.com/Riomhchlaraitheoir/impl_for_tuple.git?rev=5d0829c#5d0829cd22c5b59b4906d68234ba91bc4a23c644"
 dependencies = [
  "difference",
  "prettyplease 0.3.0",
@@ -1122,6 +1124,7 @@ checksum = "b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be"
 [[package]]
 name = "validator"
 version = "0.1.0"
+source = "git+https://github.com/Riomhchlaraitheoir/rust-validator.git?rev=d45bda3#d45bda383fafb2ef4d0c29277d391591513882bb"
 dependencies = [
  "derive_more",
  "impl_for_tuple",
