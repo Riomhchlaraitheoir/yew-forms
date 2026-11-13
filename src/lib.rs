@@ -1,6 +1,6 @@
+use std::mem;
 use validator::{Validate, ValidationErrors};
-use yew::{html, Callback, Component, Context, Html, Properties};
-
+use yew::{html, Callback, Component, Context, Html, Properties, SubmitEvent};
 #[cfg(feature = "derive")]
 pub use macros::FormData;
 
@@ -28,6 +28,8 @@ pub struct FormProps<D: FormDataView> {
     pub submitting: bool,
     #[prop_or(false)]
     pub live_validation: bool,
+    #[prop_or("Submit".to_string())]
+    pub submit_label: String
 }
 
 pub enum FormMsg<D: FormDataView> {
@@ -58,7 +60,9 @@ impl<D: FormDataView> Component for Form<D> {
             FormMsg::Submit => {
                 self.error = self.data.validate().err();
                 if self.error.is_none() {
-                    ctx.props().on_submit.emit(self.data.clone());
+                    let mut data = ctx.props().initial.clone();
+                    mem::swap(&mut self.data, &mut data);
+                    ctx.props().on_submit.emit(data);
                     false
                 } else {
                     true
@@ -70,12 +74,16 @@ impl<D: FormDataView> Component for Form<D> {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let update = ctx.link().callback(FormMsg::UpdateData);
         let contents = self.data.view(D::callbacks(update), self.error.as_ref(), ctx.props().submitting);
-        let submit = ctx.link().callback(|_| FormMsg::Submit);
+        let submit = ctx.link().callback(|e: SubmitEvent| {
+            e.prevent_default();
+            FormMsg::Submit
+        });
         let submitting = ctx.props().submitting;
+        let submit_label = ctx.props().submit_label.clone();
         html! {
             <form onsubmit={submit}>
                 {contents}
-                <input type="submit" value="Log in" disabled={submitting || self.error.is_some()} />
+                <input type="submit" value={submit_label} disabled={submitting || self.error.is_some()} />
                 if submitting {
                     <div class="spinner-container">
                         // Bootstrap example class, or use your custom CSS class

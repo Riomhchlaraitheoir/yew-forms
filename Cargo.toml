@@ -11,7 +11,7 @@ edition = "2024"
 derive = ["dep:macros"]
 
 [dependencies]
-validator = { git = "https://github.com/Riomhchlaraitheoir/rust-validator.git", rev="d45bda3" }
+validator = { git = "https://github.com/Riomhchlaraitheoir/rust-validator.git", rev="17fd5d8" }
 #validator = { path = "../rust-validator/crates/validator" }
 yew = "0.23.0"
 macros = { path = "macros", optional = true }

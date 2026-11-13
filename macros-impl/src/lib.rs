@@ -1,6 +1,6 @@
 use convert_case::ccase;
 use proc_macro2::{Ident, TokenStream};
-use quote::{format_ident, quote};
+use quote::{format_ident, quote, ToTokens};
 use syn::parse::{ParseStream, Parser};
 use syn::spanned::Spanned;
 use syn::{Data, DeriveInput, Fields, Meta, parenthesized};
@@ -9,6 +9,9 @@ pub fn form_data(input: DeriveInput) -> syn::Result<TokenStream> {
     let Data::Struct(data) = input.data else {
         return Err(syn::Error::new(input.span(), "Only structs are supported."));
     };
+    let generics = input.generics;
+    let (impl_generics, type_generics, where_clause) = generics.split_for_impl();
+    let where_clause = where_clause.map(ToTokens::to_token_stream).unwrap_or_default();
 
     let Fields::Named(fields) = data.fields else {
         return Err(syn::Error::new(
@@ -78,17 +81,17 @@ pub fn form_data(input: DeriveInput) -> syn::Result<TokenStream> {
 
 
     Ok(quote! {
-        #vis enum #update {
+        #vis enum #update #generics {
             #(#variants),*
         }
 
-        #vis struct #callbacks {
+        #vis struct #callbacks #generics {
             #(#callback_fields),*
         }
 
-        impl ::yew_forms::FormData for #data {
-            type Update = #update;
-            type Callbacks = #callbacks;
+        impl #impl_generics ::yew_forms::FormData for #data #type_generics #where_clause {
+            type Update = #update #type_generics;
+            type Callbacks = #callbacks #type_generics;
 
             fn callbacks(update: ::yew::Callback<Self::Update>) -> Self::Callbacks {
                 #callbacks {
